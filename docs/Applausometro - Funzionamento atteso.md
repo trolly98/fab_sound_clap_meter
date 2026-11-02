@@ -1,59 +1,106 @@
-# Applausometro per la Gara di Bugie
-## Funzionamento atteso
+# Applausometro – Guida Operatore
 
-### 1. Obiettivo
+Il numero grande è il voto da **1 a 10**. Sale con l'applauso e scende piano quando smette.
+Accanto trovi il voto più basso (**Min**) e più alto (**Max**) raggiunti, con il pulsante **Azzera min/max**, e l'**Applause score**.
 
-Realizzare un'applicazione per PC che misuri gli applausi del pubblico e restituisca un voto da **1 a 10, con un decimale**. Il voto deve premiare soprattutto l'intensità; la durata deve avere un'influenza secondaria. L'applicazione deve funzionare senza connessione Internet.
+In alto ci sono due schede: **Configurazione** (questa guida) e **Manche** (in lavorazione). Le sezioni si dispongono in colonne secondo la larghezza della finestra e si chiudono con un clic sul titolo.
 
-### 2. Preparazione della serata
+## 1. Ingressi audio (colonna di sinistra)
 
-L'operatore inserisce nome dell'evento, data, luogo e nomi dei due concorrenti. Collega e seleziona un microfono USB, oppure un ingresso della scheda audio, e verifica il livello ricevuto.
+Ogni microfono ha una scheda con questi comandi:
 
-Una breve configurazione guidata dovrà raccogliere informazioni pratiche sullo spazio: ambiente chiuso o aperto, distanza indicativa del microfono dal pubblico, numero di persone, rumore e riverbero. Le risposte serviranno a proporre impostazioni iniziali; tutte le regolazioni dovranno restare modificabili dall'operatore.
+| Comando | A cosa serve |
+|---|---|
+| **Interruttore** | Accende o spegne questo microfono. Se è spento, non conta nel voto. |
+| **Menu dispositivo** | Sceglie quale microfono usare (USB o quello del PC). |
+| **Peso** | Dice quanto questo microfono conta nel voto (da 1 a 10). |
+| **Rimuovi** | Toglie il microfono. Ne deve restare almeno uno. |
+| **Barra verde** | Mostra il volume in dB in tempo reale. La riga blu è la soglia dell'1, la riga rossa quella del 10. |
 
-Prima della gara si eseguiranno due calibrazioni:
+Il pulsante **Aggiungi ingresso** aggiunge un altro microfono.
 
-- **Rumore di fondo → riferimento dell'1:** ascolto della sala con il pubblico presente, senza persone sul palco, annunci o musica. Il normale chiacchiericcio non microfonato del pubblico costituisce il fondo da escludere dalla valutazione. Da questa misura il programma ricaverà l'estremo inferiore della scala, con un margine per le normali fluttuazioni.
-- **Applauso forte → riferimento del 10:** ascolto di un applauso forte e sostenuto richiesto allo stesso pubblico, con microfono e impianto nella disposizione prevista per la gara.
+### Come funziona il Peso
 
-La calibrazione deve segnalare se fondo e applauso sono troppo simili o se il segnale è saturo. Posizione del microfono, guadagno e parametri di voto devono restare uguali per entrambi i concorrenti; un'eventuale ricalibrazione deve essere esplicita e registrata.
+Il peso è un'**importanza**. Non conta il numero da solo, ma il confronto tra i microfoni.
 
-Le regolazioni dovranno permettere di adattare l'ascolto a sale diverse, intervenendo su guadagno digitale, frequenze analizzate, riduzione del fondo e attenuazione delle code di riverbero. Dovrà essere possibile aggiungere un secondo microfono, per ascoltare un'altra zona del pubblico oppure un disturbo da compensare.
+- Con **un solo microfono** il peso non cambia niente.
+- Con **più microfoni**, ognuno conta in proporzione al suo peso.
 
-### 3. Svolgimento di una votazione
+Esempio: microfono A con peso 8 e microfono B con peso 2. A conta l'80%, B il 20%.
+Peso 1 è il minimo: quel microfono conta pochissimo.
 
-1. L'operatore seleziona manche, eventuale turno e concorrente.
-2. Quando il concorrente termina la bugia e inizia l'applauso, l'operatore avvia subito l'ascolto.
-3. La misura segue la modalità scelta: **tempo fisso**, uguale per tutti, oppure **avvio e arresto manuali**, con l'operatore che decide quando concludere l'ascolto.
-4. Al termine il programma calcola il voto, lo salva e lo visualizza sullo schermo del computer, associato al concorrente e alla manche selezionati.
+Un microfono con peso basso, ma molto vicino a un applauso forte, può comunque farsi sentire: il calcolo usa la potenza del suono, non solo il numero.
 
-Durante monologhi, presentazioni e musiche il programma resta in attesa e non assegna voti. L'avvio di ciascuna misurazione resta sotto il controllo dell'operatore. Tutte le visualizzazioni sono destinate alla regia.
+## 2. Calibrazione (colonna di destra)
 
-### 4. Criterio del voto
+La calibrazione insegna all'app due cose: **quanto è forte il silenzio della sala (= voto 1)** e **quanto è forte un applauso fortissimo (= voto 10)**. Tutto quello che sta in mezzo viene distribuito tra 1 e 10.
 
-L'intensità va valutata rispetto al fondo della sala, senza basarsi sul solo picco massimo. Un singolo colpo o urlo non deve determinare da solo il risultato. Nella modalità a tempo fisso la valutazione deve considerare l'intera finestra, comprese le pause.
+Scegli il tipo dal menu in alto:
 
-**Finestra iniziale proposta per la modalità a tempo fisso: 5 secondi.**
+| Tipo | Come funziona |
+|---|---|
+| **Semplice** | Il voto cresce in modo regolare tra le due soglie. La più facile da usare. |
+| **Con curva non lineare** | Come la semplice, ma puoi rendere il voto più generoso o più severo (vedi cursore Curva). |
+| **Manuale** | Niente pulsanti di cattura. Guardi i dB in tempo reale e imposti tu le due soglie con i cursori. |
 
-Il fondo della sala, definito nella prima calibrazione, corrisponde al riferimento inferiore della scala; l'applauso forte di riferimento al massimo. La risposta deve distinguere in modo progressivo applausi deboli, medi e forti. La stessa registrazione, con gli stessi parametri, deve restituire lo stesso voto.
+### I comandi della calibrazione
 
-### 5. Manche e risultato finale
+| Comando | A cosa serve |
+|---|---|
+| **Barra dei dB** | Il volume attuale, con la riga blu (1) e la riga rossa (10). |
+| **Cattura fondo (=1)** | Ascolta la sala per 3 secondi e fissa la soglia dell'**1**. Premilo con il pubblico presente, ma senza applausi né musica. |
+| **Cattura applauso (=10)** | Ascolta per 3 secondi e fissa la soglia del **10**. Premilo mentre il pubblico fa un applauso forte e continuo. |
+| **Soglia 1** | Cursore per spostare a mano la soglia dell'1. Sotto questo volume il voto resta 1. |
+| **Soglia 10** | Cursore per spostare a mano la soglia del 10. Sopra questo volume il voto resta 10. |
+| **Curva (esponente)** | Solo nella modalità con curva. Sotto 1 il voto è più generoso, sopra 1 è più severo, 1 è come la semplice. |
 
-La scaletta comprende:
+I pulsanti di cattura compaiono solo nelle modalità **Semplice** e **Con curva**.
 
-- **Il Bug-io:** un voto per concorrente.
-- **Bazze Volanti:** due voti per concorrente.
-- **Il Tribunale:** un voto per concorrente dopo il proprio turno di difesa.
-- **La Grande Balla:** un voto per concorrente.
+### Spike filter (spunta in fondo alla calibrazione)
 
-Sono previste dieci misurazioni. L'operatore deve poter modificare l'ordine o saltare una manche.
+Toglie i **picchi brevi** di volume, come un colpo sul microfono, un urlo o un battito isolato, che altrimenti alzerebbero il voto per un attimo. Gli applausi veri restano.
 
-Per Bazze Volanti si usa la media dei due turni, così ogni manche ha lo stesso peso. Il totale è la somma dei quattro voti di manche. Il tabellone deve mostrare i voti per manche e il totale progressivo di ciascun concorrente, segnalando voti mancanti e parità.
+| Regolatore | A cosa serve |
+|---|---|
+| **Soglia spike** | Quanto un picco deve superare il volume normale per essere considerato spike (12 dB all'inizio). Più bassa = toglie di più. |
+| **Durata massima spike** | Un rumore forte che dura **meno** di questo tempo (300 ms all'inizio) viene tolto. Se dura **di più**, è considerato applauso e resta. |
+| **Ritardo della misura** | Non si regola: è un'informazione. Il filtro deve "guardare avanti" per decidere, quindi il voto arriva un po' in ritardo (0,5 s all'inizio). |
 
-### 6. Interfaccia e salvataggio
+Due cose da sapere:
+- I battiti ravvicinati di un applauso restano. Un battito **isolato**, con almeno 0,2 s di calma prima e dopo, viene invece trattato come spike.
+- Le barre dei singoli microfoni mostrano sempre il volume **vero**. Il filtro agisce sul volume totale (barra della calibrazione) e quindi sul voto.
 
-La schermata di regia deve mostrare chiaramente concorrente, manche, stato della misura, livello audio, tempo trascorso o rimanente, voto e riepilogo della gara. Servono comandi semplici per configurare la sala, calibrare, avviare, fermare e annullare una misurazione. I nomi dei concorrenti devono essere modificabili.
+## 3. Applause Algorithm
 
-Ogni risultato valido deve essere salvato automaticamente e recuperabile dopo una chiusura del programma. Deve essere possibile esportare il riepilogo della serata.
+Sceglie come calcolare l'**Applause score** (da 1 a 10), che compare anche sullo schermo del pubblico. Ogni algoritmo ha i suoi regolatori.
 
-Durante le misurazioni dovrà essere possibile registrare localmente l'audio ricevuto, insieme ai parametri e al risultato, per analizzare eventuali disturbi. L'opzione dovrà poter includere anche le calibrazioni. Le registrazioni non devono rallentare il calcolo del voto.
+**Weighted Sliding Window Algorithm**: guarda solo gli ultimi secondi (finestra mobile) e unisce tre cose: quanto è stato forte l'applauso in media (50%), quanto è stato forte nei momenti migliori (30%) e per quanto tempo è rimasto forte (20%).
+
+| Regolatore | A cosa serve |
+|---|---|
+| Durata finestra mobile | Quanti secondi guardare (4 all'inizio). Corta = reagisce in fretta. Lunga = più stabile. |
+| *Advanced settings* (si apre con un clic, chiusa all'inizio): | |
+| Frequenza di aggiornamento | Ogni quanto ricalcola il voto (0,5 s). |
+| Soglia di costanza | Voto minimo per contare come "applauso forte" (6). |
+| Soglia di attivazione | Sotto questo voto l'applauso non è ancora iniziato (3). |
+| Tempo di stabilizzazione | Secondi iniziali da ignorare (0,5 s). |
+| Pesi (media, picco, costanza) | Quanto conta ciascuna delle tre parti. Non serve che facciano 100. |
+
+L'analizzatore è **fermo** finché non lo avvii dalla scheda **Manche** con **Start applause analyzer**. Con **Stop applause analyzer** si ferma e dà il **voto finale**: la media degli ultimi 2,5 secondi, così un attimo rumoroso non decide il risultato.
+
+## 4. Schermo del pubblico
+
+| Comando | A cosa serve |
+|---|---|
+| **Stile pubblico** | Cambia la grafica dello schermo del pubblico. |
+| **Mostra / Nascondi pubblico** | Apre o chiude la finestra del pubblico. |
+| **Schermo intero** | Mette la finestra del pubblico a schermo intero (anche con doppio click o tasto F11). |
+
+## In breve, per iniziare
+
+1. Scegli il microfono e controlla che la barra verde si muova.
+2. Premi **Cattura fondo** con la sala in silenzio.
+3. Fai fare un applauso forte e premi **Cattura applauso**.
+4. Prova con qualche applauso e, se serve, ritocca le soglie.
+
+Non cambiare più microfono, peso o soglie durante la gara: tutti i concorrenti devono essere misurati nello stesso modo.

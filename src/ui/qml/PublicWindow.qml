@@ -4,7 +4,7 @@ import QtQuick.Window
 Window {
     id: window
     width: 1280; height: 720
-    title: "Public View"
+    title: "Applausometro - Pubblico"
     color: "black"
 
     function toggleFullScreen() {

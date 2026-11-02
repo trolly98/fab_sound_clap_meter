@@ -13,7 +13,7 @@ class SampleDecoder:
 
     def __init__(self, sample_format: QAudioFormat.SampleFormat):
         if sample_format not in _FORMATS:
-            raise ValueError(f"Sample format not supported: {sample_format}")
+            raise ValueError(f"Formato campioni non supportato: {sample_format}")
         self._dtype, self._scale = _FORMATS[sample_format]
 
     def decode(self, raw: bytes) -> np.ndarray:
