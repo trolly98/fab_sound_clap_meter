@@ -8,6 +8,16 @@ ApplicationWindow {
     visible: true
     title: "Applausometro - Operatore"
     Material.theme: Material.Dark
+    Material.background: Theme.colors.windowColor
+    Material.foreground: Theme.colors.textPrimary
+    Material.accent: Theme.colors.controlAccent
+    Material.primary: Theme.colors.headerColor
+
+    // L'unico punto in cui si carica la palette scelta: operatore e pubblico la leggono da Theme.colors
+    Loader {
+        source: clapMeter.paletteUrl
+        onLoaded: Theme.colors = item
+    }
 
     PublicWindow { id: publicView; visible: true }
 

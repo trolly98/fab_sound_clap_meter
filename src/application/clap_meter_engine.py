@@ -11,7 +11,7 @@ from domain.score_extremes import ScoreExtremes
 from domain.spike_filter import SpikeFilter
 from domain.weighted_power_mixer import WeightedLevel, WeightedPowerMixer
 from infrastructure.json_settings_store import JsonSettingsStore
-from infrastructure.style_catalog import StyleCatalog
+from infrastructure.qml_file_catalog import QmlFileCatalog
 
 from .applause_analyzer_controller import ApplauseAnalyzerController
 from .channel_controller import ChannelController
@@ -34,11 +34,13 @@ class ClapMeterEngine(QObject):
     captureChanged = Signal()
     styleChanged = Signal()
     applauseChanged = Signal()
+    paletteChanged = Signal()
 
-    def __init__(self, devices: DeviceCatalog, styles: StyleCatalog, store: JsonSettingsStore,
+    def __init__(self, devices: DeviceCatalog, styles: QmlFileCatalog, palettes: QmlFileCatalog,
+                 store: JsonSettingsStore,
                  applause_registry: ApplauseAlgorithmRegistry):
         super().__init__()
-        self._devices, self._styles, self._store = devices, styles, store
+        self._devices, self._styles, self._palettes, self._store = devices, styles, palettes, store
         self._mixer, self._smoother = WeightedPowerMixer(), LevelSmoother()
         self._spike_enabled = False
         self._spike_max_ms = DEFAULT_SPIKE_MAX_MS
@@ -85,6 +87,8 @@ class ClapMeterEngine(QObject):
         self._curve = data.get("curve", 1.8)
         style = data.get("style")
         self._style = style if style in self._styles.names() else self._styles.default()
+        palette = data.get("palette")
+        self._palette = palette if palette in self._palettes.names() else self._palettes.default()
         spike = data.get("spikeFilter", {})
         self._spike_enabled = spike.get("enabled", False)
         self._spike_threshold_db = spike.get("thresholdDb", DEFAULT_SPIKE_THRESHOLD_DB)
@@ -100,7 +104,7 @@ class ClapMeterEngine(QObject):
     def save(self) -> None:
         self._store.save({
             "mode": self._mode.key, "floorDb": self._floor_db, "peakDb": self._peak_db,
-            "curve": self._curve, "style": self._style,
+            "curve": self._curve, "style": self._style, "palette": self._palette,
             "spikeFilter": {"enabled": self._spike_enabled, "thresholdDb": self._spike_threshold_db,
                             "maxDurationMs": self._spike_max_ms},
             "applause": self._applause.snapshot(),
@@ -200,6 +204,12 @@ class ClapMeterEngine(QObject):
         self._rebuild_mapper()
 
     @Slot(str)
+    def setPalette(self, name: str) -> None:
+        if name in self._palettes.names():
+            self._palette = name
+            self.paletteChanged.emit()
+
+    @Slot(str)
     def setStyle(self, name: str) -> None:
         self._style = name
         self.styleChanged.emit()
@@ -236,4 +246,7 @@ class ClapMeterEngine(QObject):
     captureLabel = Property(str, lambda s: {"floor": "Ascolto del fondo...", "peak": "Ascolto dell'applauso..."}.get(s._capture_kind, ""), notify=captureChanged)
     styleNames = Property(list, lambda s: s._styles.names(), constant=True)
     styleName = Property(str, lambda s: s._style, notify=styleChanged)
+    paletteOptions = Property(list, lambda s: s._palettes.options(), constant=True)
+    paletteName = Property(str, lambda s: s._palette, notify=paletteChanged)
+    paletteUrl = Property(str, lambda s: s._palettes.url(s._palette), notify=paletteChanged)
     styleUrl = Property(str, lambda s: s._styles.url(s._style), notify=styleChanged)

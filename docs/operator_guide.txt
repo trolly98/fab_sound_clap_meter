@@ -1,6 +1,9 @@
 # Applausometro – Guida Operatore
 
 Il numero grande è il voto da **1 a 10**. Sale con l'applauso e scende piano quando smette.
+Accanto trovi il voto più basso (**Min**) e più alto (**Max**) raggiunti, con il pulsante **Azzera min/max**, e l'**Applause score**.
+
+In alto ci sono due schede: **Configurazione** (questa guida) e **Manche** (in lavorazione). Le sezioni si dispongono in colonne secondo la larghezza della finestra e si chiudono con un clic sul titolo.
 
 ## 1. Ingressi audio (colonna di sinistra)
 
@@ -53,11 +56,44 @@ Scegli il tipo dal menu in alto:
 
 I pulsanti di cattura compaiono solo nelle modalità **Semplice** e **Con curva**.
 
-## 3. Schermo del pubblico
+### Spike filter (spunta in fondo alla calibrazione)
+
+Toglie i **picchi brevi** di volume, come un colpo sul microfono, un urlo o un battito isolato, che altrimenti alzerebbero il voto per un attimo. Gli applausi veri restano.
+
+| Regolatore | A cosa serve |
+|---|---|
+| **Soglia spike** | Quanto un picco deve superare il volume normale per essere considerato spike (12 dB all'inizio). Più bassa = toglie di più. |
+| **Durata massima spike** | Un rumore forte che dura **meno** di questo tempo (300 ms all'inizio) viene tolto. Se dura **di più**, è considerato applauso e resta. |
+| **Ritardo della misura** | Non si regola: è un'informazione. Il filtro deve "guardare avanti" per decidere, quindi il voto arriva un po' in ritardo (0,5 s all'inizio). |
+
+Due cose da sapere:
+- I battiti ravvicinati di un applauso restano. Un battito **isolato**, con almeno 0,2 s di calma prima e dopo, viene invece trattato come spike.
+- Le barre dei singoli microfoni mostrano sempre il volume **vero**. Il filtro agisce sul volume totale (barra della calibrazione) e quindi sul voto.
+
+## 3. Applause Algorithm
+
+Sceglie come calcolare l'**Applause score** (da 1 a 10), che compare anche sullo schermo del pubblico. Ogni algoritmo ha i suoi regolatori.
+
+**Weighted Sliding Window Algorithm**: guarda solo gli ultimi secondi (finestra mobile) e unisce tre cose: quanto è stato forte l'applauso in media (50%), quanto è stato forte nei momenti migliori (30%) e per quanto tempo è rimasto forte (20%).
+
+| Regolatore | A cosa serve |
+|---|---|
+| Durata finestra mobile | Quanti secondi guardare (4 all'inizio). Corta = reagisce in fretta. Lunga = più stabile. |
+| *Advanced settings* (si apre con un clic, chiusa all'inizio): | |
+| Frequenza di aggiornamento | Ogni quanto ricalcola il voto (0,5 s). |
+| Soglia di costanza | Voto minimo per contare come "applauso forte" (6). |
+| Soglia di attivazione | Sotto questo voto l'applauso non è ancora iniziato (3). |
+| Tempo di stabilizzazione | Secondi iniziali da ignorare (0,5 s). |
+| Pesi (media, picco, costanza) | Quanto conta ciascuna delle tre parti. Non serve che facciano 100. |
+
+L'analizzatore è **fermo** finché non lo avvii dalla scheda **Manche** con **Start applause analyzer**. Con **Stop applause analyzer** si ferma e dà il **voto finale**: la media degli ultimi 2,5 secondi, così un attimo rumoroso non decide il risultato.
+
+## 4. Schermo del pubblico
 
 | Comando | A cosa serve |
 |---|---|
-| **Stile pubblico** | Cambia la grafica dello schermo del pubblico. |
+| **Stile pubblico** | Cambia la grafica dello schermo del pubblico (Bar, Dial...). |
+| **Color Palette** | Cambia i colori dello schermo del pubblico **e di questo pannello**, con qualsiasi stile. *Default* = colori originali. *Porpora Style* = viola, rosa, arancio e giallo. |
 | **Mostra / Nascondi pubblico** | Apre o chiude la finestra del pubblico. |
 | **Schermo intero** | Mette la finestra del pubblico a schermo intero (anche con doppio click o tasto F11). |
 

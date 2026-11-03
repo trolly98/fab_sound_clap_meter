@@ -9,9 +9,14 @@ Item {
     function pos(v) { return width * Math.min(1, Math.max(0, (v - minDb) / -minDb)) }
 
     implicitHeight: 28
-    Rectangle { anchors.fill: parent; radius: 4; color: "#2a2a36" }
-    Rectangle { width: root.pos(root.db); height: parent.height; radius: 4; color: "#4caf50" }
-    Rectangle { x: root.pos(root.floorDb); width: 2; height: parent.height; color: "#2196f3" }
-    Rectangle { x: root.pos(root.peakDb); width: 2; height: parent.height; color: "#f44336" }
-    Text { anchors.centerIn: parent; color: "white"; text: root.db.toFixed(1) + " dB" }
+    Rectangle { anchors.fill: parent; radius: 4; color: Theme.colors.meterTrack }
+    Rectangle { width: root.pos(root.db); height: parent.height; radius: 4; color: Theme.colors.meterFill }
+    Rectangle { x: root.pos(root.floorDb); width: 2; height: parent.height; color: Theme.colors.markerLow }
+    Rectangle { x: root.pos(root.peakDb); width: 2; height: parent.height; color: Theme.colors.markerHigh }
+    Text {
+        anchors.centerIn: parent
+        text: root.db.toFixed(1) + " dB"
+        color: Theme.colors.textPrimary
+        style: Text.Outline; styleColor: Theme.colors.meterTrack   // leggibile sia sul riempimento sia sul fondo
+    }
 }

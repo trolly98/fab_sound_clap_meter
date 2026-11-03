@@ -1,25 +1,59 @@
 # fab_sound_clap_meter
 
-DB Meter: multiple audio inputs -> dB -> score 1.0-10.0.
+Applausometro generico: piu' ingressi audio -> dB -> punteggio 1.0-10.0.
 
-## Run
-    python -m venv venv
-    . venv/bin/activate
+## Avvio
     pip install -r requirements.txt
-    python src/main.py
+    cd fab_sound_clap_meter
+    python main.py
 
 Test: `python -m pytest tests`
 
-## Architecture
-- `domain/`          Pure logic, independent of Qt: weighted mixer, scale mapper, calibration modes, smoothing
-- `audio/`           QtMultimedia + NumPy: handling input streams and measuring dBFS levels
-- `application/`     `ClapMeterEngine` (facade for QML) and `ChannelController` (for a single input)
-- `infrastructure/`  Saving settings to JSON, style discovery
-- `ui/qml/`          Operator window and public-facing window
+## Architettura (dipendenze verso l'interno)
+- `domain/`          logica pura, senza Qt: mixer pesato, mapper della scala, calibrazione, smoothing, filtro spike, min/max
+- `applause_analyzer/` algoritmi che producono `applause_score` (pura logica, registro di algoritmi)
+- `audio/`           QtMultimedia + numpy: apertura ingressi e misura dei dBFS
+- `application/`     `ClapMeterEngine` (facciata per QML) e `ChannelController` (un ingresso)
+- `infrastructure/`  salvataggio JSON impostazioni, scoperta degli stili
+- `ui/qml/`          finestra operatore e finestra pubblico (`styles/` grafiche, `palettes/` colori)
+- `assets/`          `icon.png` (icona dell'app, vedi `assets/README.md`)
 
-## Multi-input formula
-P = sum(w_i * 10^(dB_i/10)) / sum(w_i);  dB = 10*log10(P)   (pesi 1-10 for each input)
+## Formula multi-ingresso
+P = sum(w_i * 10^(dB_i/10)) / sum(w_i);  dB = 10*log10(P)   (pesi 1-10 per ingresso)
 
-## New style for the UI
-Copy `ui/qml/styles/BarStyle.qml` to `<Name>Style.qml` and redesign it; it will automatically appear in the selector.
-The style receives a `meter` object (containing `score`, `scoreText`, `combinedDb`, `floorDb`, `peakDb`, `channels[...]`, etc.).
+## Nuovo stile per il pubblico
+Copia `ui/qml/styles/BarStyle.qml` in `<Nome>Style.qml` e ridisegna: appare da solo nel selettore.
+Lo stile riceve `meter` (score, scoreText, combinedDb, floorDb, peakDb, channels[...]).
+
+## Valori disponibili per gli stili pubblico (`meter.*`)
+`actual_score` (live, alias `score`), `max_score`, `min_score`, `scale_max`, `scale_min`,
+`applause_score` (live), `applause_final_score`, `applause_running`.
+
+## Aggiungere un algoritmo applause
+1. Crea una classe che estende `ApplauseAlgorithm` (nome, `definitions` dei parametri, `reset`, `feed`).
+2. Registrala in `applause_analyzer/default_registry.py`.
+L'interfaccia dei parametri nella sezione "Applause Algorithm" si costruisce da sola.
+
+## Backend per la scheda Manche
+`startApplauseAnalyzer()` e `stopApplauseAnalyzer()` (slot di `ClapMeterEngine`). Di default l'analizzatore e' fermo.
+
+## Spike filter
+`domain/spike_filter.py`: decide guardando in avanti (ritardo = durata massima + 200 ms di calma).
+Un picco sopra `base + soglia` che dura meno della durata massima ed e' seguito da calma viene sostituito con la base;
+un gruppo lungo o ripetuto (applauso) passa intatto. Parametri in `Calibrazione`: soglia dB e durata massima ms.
+
+## Palette colori
+Ogni palette e' un file `ui/qml/palettes/<Nome>Palette.qml` che eredita da `ScorePaletteBase.qml` e imposta i colori
+(sfondo, parti vuote, testo, colore Applause, colori della scala 1-10). Appare da sola nel menu "Color Palette"
+(`PorporaStylePalette.qml` -> "Porpora Style"). Gli stili leggono tutto da `colors` e non hanno colori scritti nel codice,
+quindi ogni palette funziona con ogni stile. Palette incluse: `Default` (colori originali) e `Porpora Style`.
+La palette colora anche il **pannello operatore**: `ui/qml/Theme.qml` (singleton) tiene la palette attiva e
+`OperatorWindow.qml` la carica; `SectionCard`, `LiveDbBar` e i controlli Material leggono da `Theme.colors`.
+Ruoli per l'operatore (facoltativi, se mancano si ricavano dai colori base): `windowColor`, `headerColor`, `surface`,
+`border`, `controlAccent`, `meterTrack`, `meterFill`, `markerLow`, `markerHigh`.
+Nei file QML dell'operatore non vanno scritti colori fissi: usa sempre `Theme.colors.<ruolo>`.
+
+## Icona dell'app
+Metti `assets/icon.png` (PNG quadrato 512x512, sfondo trasparente). Viene usata nella barra del titolo e nella barra
+delle applicazioni. Se manca, l'app parte lo stesso. Su Windows l'app si registra con un proprio identificativo
+(`infrastructure/app_icon.py`) cosi' la barra mostra la tua icona e non quella di Python.

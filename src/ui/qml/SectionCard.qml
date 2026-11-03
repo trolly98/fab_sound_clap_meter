@@ -11,8 +11,8 @@ Rectangle {
 
     implicitHeight: column.implicitHeight + 24
     radius: 10
-    color: "#262633"
-    border.color: "#3a3a52"
+    color: Theme.colors.surface
+    border.color: Theme.colors.border
 
     ColumnLayout {
         id: column

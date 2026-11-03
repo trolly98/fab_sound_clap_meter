@@ -12,15 +12,20 @@ from applause_analyzer.default_registry import build_default_registry
 from application.clap_meter_engine import ClapMeterEngine
 from audio.device_catalog import DeviceCatalog
 from infrastructure.json_settings_store import JsonSettingsStore
-from infrastructure.style_catalog import StyleCatalog
+from infrastructure.app_icon import AppIcon
+from infrastructure.qml_file_catalog import QmlFileCatalog
 
 QML_DIR = Path(__file__).parent / "ui" / "qml"
+ASSETS_DIR = Path(__file__).parent / "assets"
 SETTINGS_PATH = Path.home() / ".fab_sound_clap_meter" / "settings.json"
 
 
 def main() -> int:
     app = QGuiApplication(sys.argv)
-    meter = ClapMeterEngine(DeviceCatalog(), StyleCatalog(QML_DIR / "styles"), JsonSettingsStore(SETTINGS_PATH),
+    app.setApplicationName("FabSound Clap Meter")
+    AppIcon(ASSETS_DIR / "icon.png").apply(app)
+    meter = ClapMeterEngine(DeviceCatalog(), QmlFileCatalog(QML_DIR / "styles", "Style"),
+                             QmlFileCatalog(QML_DIR / "palettes", "Palette", preferred_default="Default"), JsonSettingsStore(SETTINGS_PATH),
                              build_default_registry())
     app.aboutToQuit.connect(meter.save)
 
