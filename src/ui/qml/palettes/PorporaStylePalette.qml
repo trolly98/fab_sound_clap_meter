@@ -23,5 +23,11 @@ ScorePaletteBase {
     meterFill: "#E6E457"                   // Giallo caldo
     markerLow: "#FF9CD9"                   // Rosa
     markerHigh: "#D85A38"                  // Arancio bruciato
+    // Scheda Manche
+    personA: "#FF9CD9"                     // Rosa
+    personB: "#D2D53F"                     // Chartreuse
+    good: "#E6E457"                        // Giallo caldo
+    warn: "#D85A38"                        // Arancio bruciato
+    danger: "#D85A38"
     scaleStops: ["#FF9CD9", "#D85A38", "#E6E457"]
 }

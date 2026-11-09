@@ -9,6 +9,7 @@ class ApplauseAnalyzer:
     """Avvia/ferma l'analisi. Punteggio live continuo; punteggio finale = media degli ultimi secondi."""
 
     FINAL_AVERAGE_S = 2.5
+    FINAL_DECIMALS = 2       # il voto di una sessione si registra ai centesimi
 
     def __init__(self, algorithm: ApplauseAlgorithm):
         self._algorithm = algorithm
@@ -51,8 +52,9 @@ class ApplauseAnalyzer:
         if not self._running:
             return
         elapsed = now_s - self._started_at
-        self._live = round_score(self._algorithm.feed(elapsed, score))
-        self._history.append((elapsed, self._live))
+        raw = min(10.0, max(MIN_SCORE, self._algorithm.feed(elapsed, score)))
+        self._live = round_score(raw)
+        self._history.append((elapsed, raw))      # i valori restano precisi: si arrotonda solo il risultato
         while self._history[0][0] < elapsed - self.FINAL_AVERAGE_S:
             self._history.popleft()
 
@@ -60,5 +62,5 @@ class ApplauseAnalyzer:
         if not self._running:
             return
         self._running = False
-        values = [live for _, live in self._history]
-        self._final = round_score(sum(values) / len(values)) if values else self._live
+        values = [raw for _, raw in self._history]
+        self._final = round_score(sum(values) / len(values), self.FINAL_DECIMALS) if values else self._live

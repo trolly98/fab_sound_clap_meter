@@ -36,6 +36,10 @@ class ChannelController(QObject):
         return self._level_db
 
     @property
+    def has_input(self) -> bool:
+        return self._input is not None
+
+    @property
     def effective_weight(self) -> float:
         return self._weight if self._enabled else 0.0
 

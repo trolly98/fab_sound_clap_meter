@@ -12,6 +12,7 @@ Test: `python -m pytest tests`
 ## Architettura (dipendenze verso l'interno)
 - `domain/`          logica pura, senza Qt: mixer pesato, mapper della scala, calibrazione, smoothing, filtro spike, min/max
 - `applause_analyzer/` algoritmi che producono `applause_score` (pura logica, registro di algoritmi)
+- `manche/`          la gara: manche, turni, voti, punteggi, tabellone, spareggio, modelli (pura logica, senza Qt)
 - `audio/`           QtMultimedia + numpy: apertura ingressi e misura dei dBFS
 - `application/`     `ClapMeterEngine` (facciata per QML) e `ChannelController` (un ingresso)
 - `infrastructure/`  salvataggio JSON impostazioni, scoperta degli stili
@@ -57,3 +58,18 @@ Nei file QML dell'operatore non vanno scritti colori fissi: usa sempre `Theme.co
 Metti `assets/icon.png` (PNG quadrato 512x512, sfondo trasparente). Viene usata nella barra del titolo e nella barra
 delle applicazioni. Se manca, l'app parte lo stesso. Su Windows l'app si registra con un proprio identificativo
 (`infrastructure/app_icon.py`) cosi' la barra mostra la tua icona e non quella di Python.
+
+## Scheda Manche
+**Regole** (`manche/`, senza Qt, tutto testato): `race.py` e' l'unico punto che modifica la gara (configurazione annullabile,
+blocco durante la misura e dopo la proclamazione, sessioni, sostituzioni, misure straordinarie, spareggio, modelli);
+`sequence.py` (ordine dei turni), `scoring.py` (media/somma/massimo/ultimo, totali, parita' ai centesimi),
+`presenter.py` (dati e testi per la grafica).
+**Collegamento** (`application/manche_controller.py`): traduce i comandi della grafica in operazioni sulla gara e collega
+l'analizzatore. Il voto di un turno e' `applause_final_score` (due decimali).
+**Sessione di ascolto**: `ApplauseAnalyzerController.begin(token, durata)` / `finish()` e il segnale
+`sessionFinished(token, esito, voto, secondi)`, emesso una volta sola con esito `valid | empty | cancelled`.
+Il valore 1,0 non dice nulla sulla validita': conta solo l'esito. La gara accetta solo la sessione che ha avviato (token).
+**Salvataggio**: `~/.fab_sound_clap_meter/race.json` (scrittura atomica ad ogni modifica). Se il programma si chiude durante
+una misura, questa viene registrata come annullata alla riapertura.
+**Grafica** (`ui/qml/manche/`): `RunPage` (conduzione), `BoardPage` (tabellone), `ConfigPage` (configurazione) e i loro
+componenti. I colori vengono dalla palette (`Theme.colors`, ruoli `personA`, `personB`, `good`, `warn`, `danger`).

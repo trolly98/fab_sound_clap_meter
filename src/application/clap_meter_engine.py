@@ -59,6 +59,10 @@ class ClapMeterEngine(QObject):
         self._timer.timeout.connect(self._tick)
         self._timer.start(TICK_MS)
 
+    @property
+    def applause_controller(self) -> ApplauseAnalyzerController:
+        return self._applause
+
     # ---- ciclo di misura ----
     def _tick(self) -> None:
         levels = [WeightedLevel(c.read_level(), c.effective_weight) for c in self._channels]
@@ -69,7 +73,7 @@ class ClapMeterEngine(QObject):
         self._combined_db = self._smoother.smooth(clean_db)
         self._score = round_score(self._mapper.map(self._combined_db))
         self._extremes.update(self._score)
-        self._applause.feed(self._score)
+        self._applause.feed(self._score, any(c.has_input for c in self._channels))
         self.levelChanged.emit()
 
     def _build_spike_filter(self) -> None:

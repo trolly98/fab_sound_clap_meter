@@ -105,3 +105,44 @@ L'analizzatore è **fermo** finché non lo avvii dalla scheda **Manche** con **S
 4. Prova con qualche applauso e, se serve, ritocca le soglie.
 
 Non cambiare più microfono, peso o soglie durante la gara: tutti i concorrenti devono essere misurati nello stesso modo.
+
+---
+
+# Scheda Manche
+
+In alto vedi i **totali dei due sfidanti**, lo stato della gara e quante manche sono complete. **Nuova gara…** riparte da zero (i nomi restano).
+Sotto ci sono tre pagine: **Conduzione**, **Tabellone**, **Configurazione**.
+
+## Conduzione: fare una misura
+1. A sinistra scegli la manche, poi scegli il turno (A1, B1…).
+2. Nella **console** hai due modi per misurare:
+   - **▶ Avvia misura**: parte, e finisci tu con **■ Stop** quando l'applauso è finito.
+   - **⏱ Sessione automatica**: parte e si ferma da sola dopo i secondi impostati in **Durata sessione** (da 2 a 120 s).
+3. Quando finisce, il voto (con due decimali) viene salvato. **Annulla misura** butta via la misura in corso.
+4. **Vai al prossimo turno →** ti porta al turno ancora da misurare.
+
+Se la misura risulta **vuota** (nessun microfono attivo) o **annullata**, non viene salvato nessun voto e puoi riprovare sullo stesso turno.
+Anche un voto di 1,00 è un voto valido.
+
+**Se il turno ha già un voto:**
+- **Sostituisci voto…** lo rimpiazza con una nuova misura (la vecchia resta nello storico).
+- **Misura straordinaria…** si aggiunge alla media della manche, senza cambiare il voto ordinario. Con la **×** la togli dalla media.
+
+**Storico misure** elenca tutte le sessioni, anche quelle vuote o annullate.
+
+## Tabellone e proclamazione
+Mostra voti, punteggio di ogni manche e **totale progressivo** dei due sfidanti.
+- Quando tutte le manche attive sono complete puoi **Proclamare il vincitore**.
+- Se c'è **parità**, scegli tra **Conferma pareggio** e **Avvia spareggio** (un voto a testa, separato dai totali della gara).
+- **Riapri gara…** annulla la proclamazione.
+Il confronto per i pareggi è fatto ai **centesimi**.
+
+## Configurazione delle manche
+- **Sfidanti**: i nomi dei due concorrenti.
+- **Modello di partenza**: **Carica modello…**, **Salva come modello…**, **Aggiorna modello** (solo per i tuoi modelli) e **↶ Annulla**. *Gara di Bugie* è predefinito e non si modifica né si elimina.
+- **Elenco manche**: trascina ⠿ o usa ↑ ↓ per l'ordine, la spunta attiva/disattiva, **⋯** duplica o elimina, **＋ Aggiungi** crea una manche.
+- A destra, per la manche scelta: **Generale** (nome obbligatorio, note), **Punteggio** (voti per sfidante e regola: media, somma, voto più alto, ultimo voto), **Sequenza interventi** (alternata, consecutiva, invertita, personalizzata: trascina i turni o usa ◀ ▶).
+- *Bazze volanti* ha regole fisse (due voti, media).
+
+**Quando la configurazione si blocca:** durante una misura e dopo la proclamazione. Per modificare dopo la proclamazione usa **Riapri gara…** nel Tabellone.
+Tutto si salva da solo e si ritrova alla riapertura del programma.

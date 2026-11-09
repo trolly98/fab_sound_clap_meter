@@ -28,6 +28,13 @@ QtObject {
     property color markerLow: scaleColor(0)             // riga della soglia dell'1
     property color markerHigh: scaleColor(1)            // riga della soglia del 10
 
+    // --- Scheda Manche (facoltativi) ---
+    property color personA: "#d2abff"       // sfidante A
+    property color personB: "#ffd08e"       // sfidante B
+    property color good: "#9ce4bc"          // esito positivo (misura riuscita, manche completa)
+    property color warn: "#ffcf91"          // attenzione (misura vuota o annullata)
+    property color danger: "#ff9b9b"        // azioni distruttive (elimina)
+
     // progress: 0 = voto 1, 1 = voto 10
     function scaleColor(progress) {
         var count = scaleStops.length
